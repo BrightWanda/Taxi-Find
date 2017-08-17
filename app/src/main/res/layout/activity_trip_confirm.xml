@@ -43,6 +43,7 @@
             android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
+            android:paddingLeft="20dp"
             android:layout_weight="5"
             android:text="Enjoy your trip" />
     </LinearLayout>
@@ -55,127 +56,90 @@
         android:paddingRight="16dp"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView android:id="@+id/headerOrigin"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:background="#5BC0DE"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"
-                android:text="Origin" />
+                android:text=" Origin " />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <TextView android:id="@+id/textOrigin"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:textSize="15dp"
                 android:textStyle="bold"
-                android:layout_weight="1" />
-
-            <TextView android:id="@+id/origin"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"
-                android:text="Noord Taxi Rank" />
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:paddingBottom="2dp"
+                android:text=" Noord Taxi Rank " />
 
         </LinearLayout>
 
-        <TextView android:id="@+id/listHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:layout_weight="1" />
-
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="5"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="60dp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <TextView android:id="@+id/headerDestination"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="#2196F3"
+                android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:background="#458CCA"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"
-                android:text="Destination" />
+                android:text=" Destination " />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <TextView android:id="@+id/textDestination"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:textSize="15dp"
                 android:textStyle="bold"
-                android:layout_weight="1" />
-
-            <TextView android:id="@+id/destination"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"
-                android:text="Midrand Taxi Rank" />
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:paddingBottom="2dp"
+                android:text=" Midrand Taxi Rank " />
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:layout_weight="1" />
-
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="5"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="60dp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+            <TextView android:id="@+id/headerPrice"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:background="#999999"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"
-                android:text="Price" />
+                android:text=" Price " />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <TextView android:id="@+id/textPrice"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:textSize="15dp"
                 android:textStyle="bold"
-                android:layout_weight="1" />
-
-            <TextView android:id="@+id/price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                android:layout_weight="0.5"
-                android:text="R18" />
-
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:text=" R18 " />
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>
-
-
-<!-- #999999-->

@@ -1,19 +1,15 @@
 package com.taxifind.kts.taxifind;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 
-import android.Manifest;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,8 +18,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.taxifind.kts.POJOs.Distance;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,13 +32,15 @@ import retrofit2.Response;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private GPSTracker gps;
-    private Location mLocation;
     private double longitude, latitude;
     private List<Address> addresses;
-    private List<Distance> distance;
+    private ArrayList<Distance> distance;
     private ApiInterface apiInterface;
     Geocoder geocoder;
-
+    public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
+    public static final String LONG = "com.taxifind.kts.taxifind.LONG";
+    public static final String LAT = "com.taxifind.kts.taxifind.LAT";
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,6 +51,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         gps = new GPSTracker(MapsActivity.this);
         geocoder = new Geocoder(this, Locale.getDefault());
+
+        spinner=(ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
 
 
         // check if GPS enabled
@@ -84,29 +87,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                spinner.setVisibility(View.VISIBLE);
                 apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-                Call<List<Distance>> call = apiInterface.getDistances(0, "Johannesburg", "Vosloorus", "Johannesburg", -26.209340, 28.039378);
+                Call<ArrayList<Distance>> call = apiInterface.getDistances(0, "Johannesburg", "Vosloorus", "Johannesburg", -26.209340, 28.039378);
 
-                call.enqueue(new Callback<List<Distance>>() {
+                call.enqueue(new Callback<ArrayList<Distance>>(){
                     @Override
-                    public void onResponse(Call<List<Distance>> call, Response<List<Distance>> response) {
+                    public void onResponse(Call<ArrayList<Distance>> call, Response<ArrayList<Distance>> response) {
                         distance = response.body();
-                        Toast.makeText(getApplicationContext(), distance.get(0).getRankname() , Toast.LENGTH_LONG).show();
-                        //adapter = new RecyclerAdapter(contacts);
-                        //recyclerView.setAdapter(adapter);
+                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                        spinner.setVisibility(View.GONE);
+                        Intent intent = new Intent(MapsActivity.this, ChooseRank.class);
+                        intent.putExtra(EXTRA_MESSAGE, distance);
+                        intent.putExtra(LONG, longitude +"");
+                        intent.putExtra(LAT, latitude + "");
+                        startActivity(intent);
                     }
 
                     @Override
-                    public void onFailure(Call<List<Distance>> call, Throwable t) {
+                    public void onFailure(Call<ArrayList<Distance>> call, Throwable t) {
                         Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
-
-
-                // Code here executes on main thread after user presses button
-                Intent intent = new Intent(MapsActivity.this, TripConfirm.class);
-                startActivity(intent);
             }
         });
     }
@@ -123,7 +126,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(MapsActivity.this, "clicking the toolbar!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MapsActivity.this, Overview.class);
+                    startActivity(intent);
                 }
             }
         );

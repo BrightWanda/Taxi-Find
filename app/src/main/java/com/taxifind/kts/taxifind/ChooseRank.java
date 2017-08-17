@@ -1,16 +1,12 @@
 package com.taxifind.kts.taxifind;
 
-import android.app.ListActivity;
-import android.app.ListFragment;
-import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,86 +16,59 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.taxifind.kts.POJOs.Distance;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-public class ChooseRank extends FragmentActivity implements OnMapReadyCallback {
+
+public class ChooseRank extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private GPSTracker gps;
     private Location mLocation;
     private double longitude, latitude;
-
+    ListView list;
+    LazyAdapter adapter;
+    private ArrayList<Distance> distance;
+    public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
+    public static final String LONG = "com.taxifind.kts.taxifind.LONG";
+    public static final String LAT = "com.taxifind.kts.taxifind.LAT";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_rank);
 
-        //initToolBar();
+        Intent intent = getIntent();
+        longitude = Double.parseDouble(intent.getStringExtra(MapsActivity.LONG));
+        latitude = Double.parseDouble(intent.getStringExtra(MapsActivity.LAT));
 
-        gps = new GPSTracker(ChooseRank.this);
+        distance = (ArrayList<Distance>) intent.getSerializableExtra(EXTRA_MESSAGE);
+        list= (ListView)findViewById(R.id.list);
 
-        // check if GPS enabled
-        if(gps.canGetLocation()){
+        adapter=new LazyAdapter(this, distance);
+        list.setAdapter(adapter);
 
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        }else{
-            // can't get location
-            // GPS or Network is not enabled
-            // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
-        }
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), TripConfirm.class);
+                intent.putExtra(LONG, longitude +"");
+                intent.putExtra(LAT, latitude + "");
+                startActivity(intent);
+            }
+        });
 
-        // use your custom layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.rowlayout, R.id.label, values);
-        setListAdapter(adapter);
-
-
+        initToolBar();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        /*final ListView listview = findViewById(R.id.listview);
-        String[] values = new String[] { "Noord Taxi Rank      2km", "Park Station      3.7km", "MTN Taxi Rank       5km" };
-
-        final ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-        listview.setAdapter(adapter);
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
-                view.animate().setDuration(2000).alpha(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                list.remove(item);
-                                adapter.notifyDataSetChanged();
-                                view.setAlpha(1);
-                            }
-                        });
-            }
-
-        });*/
     }
 
-
-    /**public void initToolBar()
+    public void initToolBar()
     {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.toolbarTitle);
@@ -115,8 +84,7 @@ public class ChooseRank extends FragmentActivity implements OnMapReadyCallback {
                     }
                 }
         );
-    }*/
-
+    }
 
 
     /**
@@ -132,20 +100,39 @@ public class ChooseRank extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //mMap.setMinZoomPreference(6.0f);
-        //mMap.setMaxZoomPreference(14.0f);
+        LatLng myLocation = new LatLng(latitude, longitude);
 
-        /**if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-         == PackageManager.PERMISSION_GRANTED) {
-         mMap.setMyLocationEnabled(true);
-         } else {
-         // Show rationale and request permission.
-         }*/
-
-        // Add a marker in Sydney and move the camera
+        mMap.addMarker(new MarkerOptions().position(myLocation).title("My Location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+        // Zoom in, animating the camera.
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+    }
+    /*
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
 
         LatLng myLocation = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(myLocation).title("My Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-    }
+
+        latitude += 100.50;
+        latitude -= 10.50;
+
+        LatLng my2ndLocation = new LatLng(latitude, longitude);
+
+        latitude -= 150.50;
+        latitude += 160.50;
+
+        LatLng my3rdLocation = new LatLng(latitude, longitude);
+
+        mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
+        mMap.addMarker(new MarkerOptions().position(my2ndLocation).title("A"));
+        mMap.addMarker(new MarkerOptions().position(my3rdLocation).title("B"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(my3rdLocation,15));
+        // Zoom in, animating the camera.
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+    }*/
 }

@@ -64,88 +64,11 @@
             android:text="Nearest Taxi Ranks" />
 
         <ListView
-            android:id="@+id/listview"
+            android:id="@+id/list"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:divider="#b5b5b5"
+            android:dividerHeight="1dp"
+            android:listSelector="@drawable/list_selector" />
     </LinearLayout>
-
-
-
-    <!-- Child linear layout with horizontal orientation
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#2a2a2a">
-
-        <EditText
-            android:id="@+id/plain_text_input"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:inputType="text"/>
-
-        <Button
-            android:id="@+id/button_id"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/find" />
-    </LinearLayout>-->
 </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <fragment android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:id="@+id/map"
-            android:layout_weight="2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Hello, I am a TextView" />
-
-    </LinearLayout>-->
-
-
-
-
-    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.taxifind.kts.taxifind.MapsActivity" />-->
-
-
-
-
-
-    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.taxifind.kts.taxifind.ChooseRank" />-->

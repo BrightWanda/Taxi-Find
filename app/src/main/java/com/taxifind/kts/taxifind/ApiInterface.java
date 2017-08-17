@@ -1,12 +1,16 @@
 package com.taxifind.kts.taxifind;
 
-import java.util.List;
+import com.taxifind.kts.POJOs.Countries;
+import com.taxifind.kts.POJOs.Country;
+import com.taxifind.kts.POJOs.Distance;
+import com.taxifind.kts.POJOs.Province;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -14,14 +18,17 @@ import retrofit2.http.POST;
  */
 public interface ApiInterface {
 
+    @GET("Provinces")
+    Call<Province> GetProvinces();
+    @GET("Countries")
+    Call<Countries> GetCountries();
     @FormUrlEncoded
     @POST("Distances")
-    public Call<List<Distance>> getDistances(
+    Call<ArrayList<Distance>> getDistances(
             @Field("id") int id,
             @Field("origin") String origin,
             @Field("destination") String destination,
             @Field("mycity") String mycity,
             @Field("latitude") Double latitude,
             @Field("longitude") Double longitude);
-    //Call<List<Distance>> getDistance();
 }

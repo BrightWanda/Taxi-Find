@@ -1,8 +1,12 @@
 package com.taxifind.kts.taxifind;
 
-import android.location.Location;
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,13 +14,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.taxifind.kts.POJOs.Distance;
 
-public class TripConfirm extends FragmentActivity implements OnMapReadyCallback {
+public class TripConfirm extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private GPSTracker gps;
-    private Location mLocation;
     private double longitude, latitude;
-
+    public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
+    private Distance distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,24 +28,21 @@ public class TripConfirm extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_confirm);
 
-        //initToolBar();
+        Intent intent = getIntent();
+        longitude = Double.parseDouble(intent.getStringExtra(ChooseRank.LONG));
+        latitude = Double.parseDouble(intent.getStringExtra(ChooseRank.LAT));
 
-        gps = new GPSTracker(TripConfirm.this);
+        distance = (Distance) intent.getSerializableExtra(EXTRA_MESSAGE);
 
-        // check if GPS enabled
-        if(gps.canGetLocation()){
+        initToolBar();
 
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
+        TextView textOrigin = (TextView) findViewById(R.id.textOrigin);
+        TextView textDestination = (TextView) findViewById(R.id.textDestination);
+        TextView textPrice = (TextView) findViewById(R.id.textPrice);
 
-        }else{
-            // can't get location
-            // GPS or Network is not enabled
-            // Ask user to enable GPS/network in settings
-            gps.showSettingsAlert();
-        }
-
-
+        textOrigin.setText(" "+distance.getRankname());
+        textDestination.setText(" "+"Vosloorus");
+        textPrice.setText(" "+"R18");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -50,24 +51,23 @@ public class TripConfirm extends FragmentActivity implements OnMapReadyCallback 
     }
 
 
-    /**public void initToolBar()
-     {
-     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-     toolbar.setTitle(R.string.toolbarTitle);
+    public void initToolBar()
+    {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.toolbarTitle);
 
-     setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
-     toolbar.setNavigationIcon(R.drawable.ic_menu_black_18dp);
-     toolbar.setNavigationOnClickListener(
-     new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-    Toast.makeText(ChooseRank.this, "clicking the toolbar!", Toast.LENGTH_SHORT).show();
+        toolbar.setNavigationIcon(R.drawable.ic_menu_black_18dp);
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(TripConfirm.this, "clicking the toolbar!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
-    }
-     );
-     }*/
-
 
 
     /**
@@ -83,21 +83,13 @@ public class TripConfirm extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //mMap.setMinZoomPreference(6.0f);
-        //mMap.setMaxZoomPreference(14.0f);
-
-        /**if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-         == PackageManager.PERMISSION_GRANTED) {
-         mMap.setMyLocationEnabled(true);
-         } else {
-         // Show rationale and request permission.
-         }*/
-
-        // Add a marker in Sydney and move the camera
-
-
         LatLng myLocation = new LatLng(latitude, longitude);
+
         mMap.addMarker(new MarkerOptions().position(myLocation).title("My Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+        // Zoom in, animating the camera.
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
     }
 }

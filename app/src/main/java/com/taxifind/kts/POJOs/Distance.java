@@ -1,9 +1,11 @@
-package com.taxifind.kts.taxifind;
+package com.taxifind.kts.POJOs;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Distance {
+import java.io.Serializable;
+
+public class Distance implements Serializable{
 
     @SerializedName("id")
     @Expose
