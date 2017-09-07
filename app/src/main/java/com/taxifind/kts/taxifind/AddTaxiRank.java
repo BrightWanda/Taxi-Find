@@ -74,6 +74,7 @@ public class AddTaxiRank extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), origin_city, Toast.LENGTH_SHORT).show();
+                //
             }
         });
 
