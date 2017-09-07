@@ -21,12 +21,12 @@
 
     <TextView android:id="@+id/listHeader"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:paddingLeft="15dp"
         android:textColor="#FFFFFF"
         android:layout_weight="1"
         android:gravity="top"
-        android:textSize="20dp"
+        android:textSize="40dp"
         android:text="Did We Miss A Taxi Rank?" />
 
     <LinearLayout
@@ -41,10 +41,10 @@
             android:layout_height="wrap_content">
 
             <AutoCompleteTextView
-                android:id="@+id/addOrigin"
+                android:id="@+id/addOrigincity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_origin"
+                android:hint="@string/add_origin_city"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -55,10 +55,38 @@
             android:layout_height="wrap_content">
 
             <AutoCompleteTextView
-                android:id="@+id/addDestination"
+                android:id="@+id/addOriginrank"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_destination"
+                android:hint="@string/add_origin_rank"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/addDestinationcity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_destination_city"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/addDestinationrank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_destination_rank"
                 android:maxLines="1"
                 android:singleLine="true" />
 

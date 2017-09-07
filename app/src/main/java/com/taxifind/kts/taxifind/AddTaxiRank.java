@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A login screen that offers login via email/password.
+ * This activity is responsible for allowing the user to input Taxi Rank information
  */
 public class AddTaxiRank extends AppCompatActivity{
 
@@ -45,19 +45,35 @@ public class AddTaxiRank extends AppCompatActivity{
     private View mLoginFormView;
     private GPSTracker gps;
     private double longitude, latitude;
+    private String origin_city = "";
+    private String destination_city = "";
+    private String origin_rank = "";
+    private String destination_rank = "";
     Geocoder geocoder;
     private List<Address> addresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_taxi_rank);
 
-        Button mSubmit = (Button) findViewById(R.id.submit);
+        Button mSubmit = (Button) findViewById(R.id.submit); //Submit button
+
+        TextView orgincity = (TextView)findViewById(R.id.addOrigincity); // Origin City
+        TextView originrank = (TextView)findViewById(R.id.addOriginrank); // Origin Taxi Rank
+        TextView destinationcity = (TextView)findViewById(R.id.addDestinationcity); // Destination City
+        TextView destinationrank = (TextView)findViewById(R.id.addDestinationrank); //Destination Taxi Rank
+
+        origin_city = orgincity.getText().toString().trim();
+        origin_rank = originrank.getText().toString();
+        destination_city = destinationcity.getText().toString();
+        destination_rank = destinationrank.getText().toString();
+
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ////////attemptLogin();
+                Toast.makeText(getApplicationContext(), origin_city, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -82,8 +98,10 @@ public class AddTaxiRank extends AppCompatActivity{
 
                 try{
                     addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
                 }catch(IOException ex) {
                     //Do something with the exception
+                    Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_LONG).show();
                 }
 
                 // \n is for new line
