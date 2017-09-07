@@ -129,7 +129,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         else
                         {
-                            Toast.makeText(getApplicationContext(), "Taxi Rank could not be found.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Taxi Rank could not be found", Toast.LENGTH_LONG).show();
                         }
                     }
 
