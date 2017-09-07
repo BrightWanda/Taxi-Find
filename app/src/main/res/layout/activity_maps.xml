@@ -19,8 +19,6 @@
         android:orientation="vertical"
         android:layout_weight="1"
         android:paddingTop="30dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
@@ -48,6 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
             android:textSize="20dp"
             android:textStyle="bold"
             android:layout_weight="5"
@@ -57,14 +57,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:orientation="vertical" >
         <EditText
+            android:id="@+id/txtDestination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/rank_to_find" />
+
+        <EditText
+            android:id="@+id/txtOrigin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:hint="Departure City/Town" />
+
+        <CheckBox android:id="@+id/currentLocationCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Current Location"
+            android:checked="true"
+            android:onClick="onCheckboxClicked" />
+
         <Button
             android:id="@+id/findBtn"
             android:layout_width="100dp"

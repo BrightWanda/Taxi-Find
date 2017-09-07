@@ -12,13 +12,14 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.taxifind.kts.POJOs.Countries;
-import com.taxifind.kts.POJOs.Country;
-import com.taxifind.kts.POJOs.Province;
+import com.taxifind.kts.POJOs.Municipalities;
+import com.taxifind.kts.POJOs.Provinces;
 import com.taxifind.kts.POJOs.Value;
+import com.taxifind.kts.POJOs.ValueMun;
+import com.taxifind.kts.POJOs.ValueProv;
 import com.taxifind.kts.taxifind.model.TreeNode;
 import com.taxifind.kts.taxifind.view.AndroidTreeView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,7 +31,9 @@ public class Overview extends AppCompatActivity{
     private ApiInterface apiInterface;
     private Countries countries;
     private ProgressBar spinner;
-
+    private Provinces provinces;
+    private Municipalities municipalities;
+    private static int level = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class Overview extends AppCompatActivity{
 
         apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-        Call<Countries> call = apiInterface.GetCountries();
+        Call<Countries> call = apiInterface.getCountries();
 
         call.enqueue(new Callback<Countries>() {
             @Override
@@ -55,26 +58,8 @@ public class Overview extends AppCompatActivity{
                 List<Value> amazwe = countries.getValue();
                 TreeNode root = TreeNode.root();
 
-                for (Value izwe:amazwe) {
-                    TreeNode countryRoot = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_laptop, izwe.getName() )) ;
-
-                    /*TreeNode mEC = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_folder, "Eastern Cape"));
-                    TreeNode mPE = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_folder, "Port Elizabeth"));
-                    TreeNode mdatsane = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_drive_file, "Mdatsane"));
-                    TreeNode bhayi = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_drive_file, "Bhayi"));
-                    TreeNode grahamstown = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_drive_file, "Grahams Town"));
-                    fillDownloadsFolder(mPE);
-                    mPE.addChildren(mdatsane, bhayi, grahamstown);
-
-                    TreeNode myMedia = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo_library, "Photos"));
-                    TreeNode photo1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo, "Folder 1"));
-                    TreeNode photo2 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo, "Folder 2"));
-                    TreeNode photo3 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo, "Folder 3"));
-                    myMedia.addChildren(photo1, photo2, photo3);
-
-                    mEC.addChild(mPE);
-                    countryRoot.addChildren(mEC, myMedia);*/
-
+                for (Value izwe : amazwe) {
+                    TreeNode countryRoot = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_laptop, izwe.getName()));
                     root.addChildren(countryRoot);
                 }
 
@@ -86,12 +71,6 @@ public class Overview extends AppCompatActivity{
                 tView.setDefaultNodeLongClickListener(nodeLongClickListener);
 
                 containerView.addView(tView.getView());
-                    /*spinner.setVisibility(View.GONE);
-                    Intent intent = new Intent(Overview.this, ChooseRank.class);
-                    intent.putExtra(EXTRA_MESSAGE, distance);
-                    intent.putExtra(LONG, longitude +"");
-                    intent.putExtra(LAT, latitude + "");
-                    startActivity(intent);*/
             }
 
             @Override
@@ -100,7 +79,6 @@ public class Overview extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
             }
         });
-
 
 
         if (savedInstanceState != null) {
@@ -159,54 +137,74 @@ public class Overview extends AppCompatActivity{
         @Override
         public void onClick(TreeNode node, Object value) {
             IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
-
             spinner.setVisibility(View.VISIBLE);
+            if(level == 0)
+            {
+                Toast.makeText(getApplicationContext(), "Level " + level, Toast.LENGTH_LONG).show();;
+                apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-            apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+                Call<Provinces> call = apiInterface.getProvinces(0);
 
-            Call<Province> call = apiInterface.GetProvinces();
+                call.enqueue(new Callback<Provinces>() {
+                    @Override
+                    public void onResponse(Call<Provinces> call, Response<Provinces> response) {
+                        Toast.makeText(getApplicationContext(), "Wait Kanti", Toast.LENGTH_LONG).show();
+                        provinces = response.body();
+                    }
 
-            call.enqueue(new Callback<Province>() {
-                @Override
-                public void onResponse(Call<Province> call, Response<Province> response) {
-                    spinner.setVisibility(View.GONE);
-                    province = response.body();
+                    @Override
+                    public void onFailure(Call<Provinces> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
 
-                    ViewGroup containerView = (ViewGroup) findViewById(R.id.container);
+                if(provinces != null) {
+                    Toast.makeText(getApplicationContext(), "Iyaxaka lento", Toast.LENGTH_LONG).show();
+                        spinner.setVisibility(View.GONE);
+                        List<ValueProv> provs = provinces.getValueProv();
+                        for (ValueProv prov : provs) {
+                            TreeNode province = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_folder, prov.getName()));
+                            fillDownloadsFolder(province);
+                            node.addChildren(province);
+                            level++;
+                        }
 
-                    List<Value> amazwe = countries.getValue();
-                    TreeNode root = TreeNode.root();
+                }
+            }
+            else if(level == 1)
+            {
+                Toast.makeText(getApplicationContext(), "Level " + level, Toast.LENGTH_LONG).show();;
+                apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-                    for (Value izwe : amazwe) {
-                        TreeNode countryRoot = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_laptop, izwe.getName()));
+                Call<Municipalities> call = apiInterface.getMunicipalities(0);
+
+                call.enqueue(new Callback<Municipalities>() {
+                    @Override
+                    public void onResponse(Call<Municipalities> call, Response<Municipalities> response) {
+                        spinner.setVisibility(View.GONE);
+                        municipalities = response.body();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Municipalities> call, Throwable t) {
+                        spinner.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                if(municipalities != null) {
+                    List<ValueMun> muns = municipalities.getValueMun();
+                    for (ValueMun mun : muns) {
+                        TreeNode municipalities = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_folder, mun.getName()));
+                        fillDownloadsFolder(municipalities);
+                        node.addChildren(municipalities);
+                        level++;
                     }
                 }
-
-                @Override
-                public void onFailure(Call<Province> call, Throwable t) {
-                    spinner.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
-                }
-            });
-
-            TreeNode mEC = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_folder, "Eastern Cape"));
-            TreeNode mPE = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_folder, "Port Elizabeth"));
-            TreeNode mdatsane = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_drive_file, "Mdatsane"));
-            TreeNode bhayi = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_drive_file, "Bhayi"));
-            TreeNode grahamstown = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_drive_file, "Grahams Town"));
-            fillDownloadsFolder(mPE);
-            mPE.addChildren(mdatsane, bhayi, grahamstown);
-
-            TreeNode myMedia = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo_library, "Photos"));
-            TreeNode photo1 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo, "Folder 1"));
-            TreeNode photo2 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo, "Folder 2"));
-            TreeNode photo3 = new TreeNode(new IconTreeItemHolder.IconTreeItem(R.string.ic_photo, "Folder 3"));
-            myMedia.addChildren(photo1, photo2, photo3);
-
-            mEC.addChild(mPE);
-            node.addChildren(mEC, myMedia);
-
-            //Toast.makeText(getApplicationContext(), item.text, Toast.LENGTH_LONG).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "Level " + level, Toast.LENGTH_LONG).show();
+            }
         }
     };
 

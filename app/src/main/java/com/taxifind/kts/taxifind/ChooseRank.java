@@ -1,7 +1,6 @@
 package com.taxifind.kts.taxifind;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,15 +22,15 @@ import java.util.ArrayList;
 
 public class ChooseRank extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private GPSTracker gps;
-    private Location mLocation;
     private double longitude, latitude;
     ListView list;
     LazyAdapter adapter;
     private ArrayList<Distance> distance;
+    private String dest = "";
     public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
     public static final String LONG = "com.taxifind.kts.taxifind.LONG";
     public static final String LAT = "com.taxifind.kts.taxifind.LAT";
+    public static final String DESTINATION = "com.taxifind.kts.taxifind.DEST";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,7 +40,7 @@ public class ChooseRank extends AppCompatActivity implements OnMapReadyCallback 
         Intent intent = getIntent();
         longitude = Double.parseDouble(intent.getStringExtra(MapsActivity.LONG));
         latitude = Double.parseDouble(intent.getStringExtra(MapsActivity.LAT));
-
+        dest = intent.getStringExtra(MapsActivity.DESTINATION).toString();
         distance = (ArrayList<Distance>) intent.getSerializableExtra(EXTRA_MESSAGE);
         list= (ListView)findViewById(R.id.list);
 
@@ -49,20 +48,22 @@ public class ChooseRank extends AppCompatActivity implements OnMapReadyCallback 
         list.setAdapter(adapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+
                 Intent intent = new Intent(getApplicationContext(), TripConfirm.class);
-                intent.putExtra(LONG, longitude +"");
-                intent.putExtra(LAT, latitude + "");
+                intent.putExtra(EXTRA_MESSAGE, adapter.getItem(position));
+                intent.putExtra(LONG,longitude+"");
+                intent.putExtra(DESTINATION, dest);
+                intent.putExtra(LAT,latitude+"");
+
                 startActivity(intent);
             }
-        });
+    });
 
         initToolBar();
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -109,30 +110,4 @@ public class ChooseRank extends AppCompatActivity implements OnMapReadyCallback 
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
     }
-    /*
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        LatLng myLocation = new LatLng(latitude, longitude);
-
-        latitude += 100.50;
-        latitude -= 10.50;
-
-        LatLng my2ndLocation = new LatLng(latitude, longitude);
-
-        latitude -= 150.50;
-        latitude += 160.50;
-
-        LatLng my3rdLocation = new LatLng(latitude, longitude);
-
-        mMap.addMarker(new MarkerOptions().position(myLocation).title("Your Location"));
-        mMap.addMarker(new MarkerOptions().position(my2ndLocation).title("A"));
-        mMap.addMarker(new MarkerOptions().position(my3rdLocation).title("B"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(my3rdLocation,15));
-        // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomIn());
-        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
-    }*/
 }

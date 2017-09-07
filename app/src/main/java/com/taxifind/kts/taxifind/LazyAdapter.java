@@ -33,8 +33,8 @@ public class LazyAdapter extends BaseAdapter {
         return distances.size();
     }
 
-    public Object getItem(int position) {
-        return position;
+    public Distance getItem(int position) {
+        return distances.get(position);
     }
 
     public long getItemId(int position) {

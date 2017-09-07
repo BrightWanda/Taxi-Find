@@ -9,7 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,13 +35,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private GPSTracker gps;
     private double longitude, latitude;
+    private String myCity = "";
     private List<Address> addresses;
     private ArrayList<Distance> distance;
     private ApiInterface apiInterface;
+    private TextView textView;
     Geocoder geocoder;
     public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
     public static final String LONG = "com.taxifind.kts.taxifind.LONG";
     public static final String LAT = "com.taxifind.kts.taxifind.LAT";
+    public static final String DESTINATION = "com.taxifind.kts.taxifind.DEST";
     private ProgressBar spinner;
 
     @Override
@@ -64,12 +69,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             try{
                 addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                myCity = addresses.get(0).getLocality();
+                //myCity = addresses.get(0).getAddressLine(2);
+                Toast.makeText(getApplicationContext(), myCity, Toast.LENGTH_LONG).show();
             }catch(IOException ex) {
                 //Do something with the exception
             }
 
             // \n is for new line
-            Toast.makeText(getApplicationContext(), addresses.get(0).getAddressLine(2), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), addresses.get(0).getAddressLine(2), Toast.LENGTH_LONG).show();
         }else{
             // can't get location
             // GPS or Network is not enabled
@@ -90,19 +98,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 spinner.setVisibility(View.VISIBLE);
                 apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-                Call<ArrayList<Distance>> call = apiInterface.getDistances(0, "Johannesburg", "Vosloorus", "Johannesburg", -26.209340, 28.039378);
+                CheckBox checkBox = (CheckBox)findViewById(R.id.currentLocationCheckBox);
+                textView = (TextView) findViewById(R.id.txtDestination);
+
+                if(!checkBox.isChecked())
+                {
+                    longitude = 0;
+                    latitude = 0;
+                    TextView txtView = (TextView) findViewById(R.id.txtOrigin);
+                    myCity = txtView.getText().toString();
+                }
+
+                //Call<ArrayList<Distance>> call = apiInterface.getDistances(0, "Johannesburg", "Vosloorus", "Johannesburg", -26.209340, 28.039378);
+
+                Call<ArrayList<Distance>> call = apiInterface.getDistances(0,myCity,textView.getText().toString(),myCity,latitude,longitude);
 
                 call.enqueue(new Callback<ArrayList<Distance>>(){
                     @Override
                     public void onResponse(Call<ArrayList<Distance>> call, Response<ArrayList<Distance>> response) {
                         distance = response.body();
-                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
                         spinner.setVisibility(View.GONE);
-                        Intent intent = new Intent(MapsActivity.this, ChooseRank.class);
-                        intent.putExtra(EXTRA_MESSAGE, distance);
-                        intent.putExtra(LONG, longitude +"");
-                        intent.putExtra(LAT, latitude + "");
-                        startActivity(intent);
+                        if(distance != null) {
+                            Intent intent = new Intent(MapsActivity.this, ChooseRank.class);
+                            intent.putExtra(EXTRA_MESSAGE, distance);
+                            intent.putExtra(LONG, longitude + "");
+                            intent.putExtra(LAT, latitude + "");
+                            intent.putExtra(DESTINATION, textView.getText().toString());
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), "Taxi Rank could not be found.", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -114,8 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    public void initToolBar()
-    {
+    public void initToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.toolbarTitle);
 
@@ -123,17 +150,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_18dp);
         toolbar.setNavigationOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MapsActivity.this, Overview.class);
-                    startActivity(intent);
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MapsActivity.this, AddTaxiRank.class);
+                        startActivity(intent);
+                    }
                 }
-            }
         );
     }
 
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        CheckBox chkbox = (CheckBox) findViewById(R.id.currentLocationCheckBox);
+        TextView textView = (TextView) findViewById(R.id.txtOrigin);
 
+        if(chkbox.isChecked())
+        {
+            textView.setVisibility(View.GONE);
+        }
+        else
+        {
+            textView.setVisibility(View.VISIBLE);
+        }
+    }
 
     /**
      * Manipulates the map once available.

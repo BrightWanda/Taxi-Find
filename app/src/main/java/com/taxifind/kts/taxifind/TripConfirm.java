@@ -12,14 +12,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.taxifind.kts.POJOs.Distance;
 
 public class TripConfirm extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private double longitude, latitude;
+    private double longitude, latitude, rankLongitude, rankLatitude;
+    private String tripDestination;
     public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
+    public static final String DESTINATION = "com.taxifind.kts.taxifind.DEST";
     private Distance distance;
 
     @Override
@@ -31,8 +34,14 @@ public class TripConfirm extends AppCompatActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         longitude = Double.parseDouble(intent.getStringExtra(ChooseRank.LONG));
         latitude = Double.parseDouble(intent.getStringExtra(ChooseRank.LAT));
-
+        tripDestination = intent.getStringExtra(ChooseRank.DESTINATION);
         distance = (Distance) intent.getSerializableExtra(EXTRA_MESSAGE);
+
+        rankLatitude = distance.getLatitude();
+        rankLongitude = distance.getLongitude();
+
+        /*rankLatitude = -25.968679;
+        rankLongitude = 28.119879;*/
 
         initToolBar();
 
@@ -40,9 +49,9 @@ public class TripConfirm extends AppCompatActivity implements OnMapReadyCallback
         TextView textDestination = (TextView) findViewById(R.id.textDestination);
         TextView textPrice = (TextView) findViewById(R.id.textPrice);
 
-        textOrigin.setText(" "+distance.getRankname());
-        textDestination.setText(" "+"Vosloorus");
-        textPrice.setText(" "+"R18");
+        textOrigin.setText(" "+ distance.getRankname());
+        textDestination.setText(" "+ tripDestination);
+        textPrice.setText(" "+distance.getPrice());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -84,8 +93,12 @@ public class TripConfirm extends AppCompatActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         LatLng myLocation = new LatLng(latitude, longitude);
+        LatLng rankLocation = new LatLng(rankLatitude, rankLongitude);
 
-        mMap.addMarker(new MarkerOptions().position(myLocation).title("My Location"));
+        //options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+        mMap.addMarker(new MarkerOptions().position(myLocation).title("My Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        mMap.addMarker(new MarkerOptions().position(rankLocation).title("Rank Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());

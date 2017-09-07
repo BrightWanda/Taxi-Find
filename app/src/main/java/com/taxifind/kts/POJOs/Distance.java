@@ -22,6 +22,8 @@ public class Distance implements Serializable{
     @SerializedName("distance")
     @Expose
     private Double distance;
+    @Expose
+    private Double price;
 
     public Integer getId() {
         return id;
@@ -61,5 +63,13 @@ public class Distance implements Serializable{
 
     public void setDistance(Double distance) {
         this.distance = distance;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
