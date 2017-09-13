@@ -62,7 +62,7 @@ public class AddTaxiRank extends AppCompatActivity{
     private List<Address> addresses;
     private UserInput userinput;
     private ApiInterface apiInterface;
-
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
