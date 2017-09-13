@@ -1,5 +1,7 @@
 package com.taxifind.kts.taxifind;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -119,7 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         distance = response.body();
 //                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
                         spinner.setVisibility(View.GONE);
-                        if(distance != null) {
+                        if(distance != null && distance.size() != 0) {
                             Intent intent = new Intent(MapsActivity.this, ChooseRank.class);
                             intent.putExtra(EXTRA_MESSAGE, distance);
                             intent.putExtra(LONG, longitude + "");
@@ -129,7 +131,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         else
                         {
-                            Toast.makeText(getApplicationContext(), "Taxi Rank could not be found", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Taxi Rank could not be found.", Toast.LENGTH_LONG).show();
+
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MapsActivity.this);
+
+                            alertDialogBuilder.setMessage("Do you want to add the rank to our app?");
+                                    alertDialogBuilder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface arg0, int arg1) {
+                                                    Intent intent = new Intent(MapsActivity.this, AddTaxiRank.class);
+                                                    startActivity(intent);
+                                                }
+                                            });
+
+                                    alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
                         }
                     }
 
