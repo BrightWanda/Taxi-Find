@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "23.0.1"
+    buildToolsVersion '26.0.1'
 
     defaultConfig {
         applicationId "com.taxifind.kts.taxifind"
@@ -41,9 +41,8 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.google.android.gms:play-services:11.0.0'
     compile 'com.github.johnkil.print:print:1.2.2'
-    compile 'com.google.android.gms:play-services-ads:11.0.0'
-    compile 'com.google.android.gms:play-services-identity:11.0.0'
-    compile 'com.google.android.gms:play-services-gcm:11.0.0'
+    compile 'com.google.android.gms:play-services-ads:11.0.4'
+    compile 'com.google.android.gms:play-services-identity:11.0.4'
+    compile 'com.google.android.gms:play-services-gcm:11.0.4'
 }

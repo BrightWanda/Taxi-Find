@@ -6,6 +6,7 @@ import com.taxifind.kts.POJOs.Distance;
 import com.taxifind.kts.POJOs.Municipalities;
 import com.taxifind.kts.POJOs.Province;
 import com.taxifind.kts.POJOs.Provinces;
+import com.taxifind.kts.POJOs.UserInput;
 
 import java.util.ArrayList;
 
@@ -36,4 +37,15 @@ public interface ApiInterface {
             @Field("mycity") String mycity,
             @Field("latitude") Double latitude,
             @Field("longitude") Double longitude);
+    @POST("User_Input")
+    Call<UserInput> getUserInput(
+            @Field("user_input_id") int user_input_id,
+            @Field("Origin") String Origin,
+            @Field("Destination") String Destination,
+            @Field("Price") String Price,
+            @Field("Origin_Loc_Lat") Double Origin_Loc_Lat,
+            @Field("Origin_Loc_Long") Double Origin_Loc_Long,
+            @Field("Destination_Loc_Lat") Double Destination_Loc_Lat,
+            @Field("Destination_Loc_Long") Double Destination_Loc_Long,
+            @Field("Valid") Double Valid);
 }

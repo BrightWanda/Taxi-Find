@@ -3,6 +3,7 @@ package com.taxifind.kts.taxifind;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -31,10 +32,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.taxifind.kts.POJOs.Distance;
+import com.taxifind.kts.POJOs.UserInput;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * This activity is responsible for allowing the user to input Taxi Rank information
@@ -45,12 +53,15 @@ public class AddTaxiRank extends AppCompatActivity{
     private View mLoginFormView;
     private GPSTracker gps;
     private double longitude, latitude;
-    private String origin_city = "";
-    private String destination_city = "";
-    private String origin_rank = "";
-    private String destination_rank = "";
+    TextView orgincity; // Origin City
+    TextView originrank; // Origin Taxi Rank
+    TextView destinationcity; // Destination City
+    TextView destinationrank; //Destination Taxi Rank
+    Button mSubmit;
     Geocoder geocoder;
     private List<Address> addresses;
+    private UserInput userinput;
+    private ApiInterface apiInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,23 +69,46 @@ public class AddTaxiRank extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_taxi_rank);
 
-        Button mSubmit = (Button) findViewById(R.id.submit); //Submit button
+        orgincity = (TextView)findViewById(R.id.addOrigincity); // Origin City
+        originrank = (TextView)findViewById(R.id.addOriginrank); // Origin Taxi Rank
+        destinationcity = (TextView)findViewById(R.id.addDestinationcity); // Destination City
+        destinationrank = (TextView)findViewById(R.id.addDestinationrank); //Destination Taxi Rank
 
-        TextView orgincity = (TextView)findViewById(R.id.addOrigincity); // Origin City
-        TextView originrank = (TextView)findViewById(R.id.addOriginrank); // Origin Taxi Rank
-        TextView destinationcity = (TextView)findViewById(R.id.addDestinationcity); // Destination City
-        TextView destinationrank = (TextView)findViewById(R.id.addDestinationrank); //Destination Taxi Rank
+        mSubmit = (Button) findViewById(R.id.submit); //Submit button
 
-        origin_city = orgincity.getText().toString().trim();
-        origin_rank = originrank.getText().toString();
-        destination_city = destinationcity.getText().toString();
-        destination_rank = destinationrank.getText().toString();
+
+
+
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), origin_city, Toast.LENGTH_SHORT).show();
-                ////
+
+                String origin_city =  orgincity.getText().toString();
+                String origin_rank = originrank.getText().toString();
+                String destination_city = destinationcity.getText().toString();
+                String destination_rank = destinationrank.getText().toString();
+
+                origin_city = origin_city + "(" + origin_rank + ")";
+                destination_city = destination_city+ "(" + destination_rank + ")";
+
+                //Toast.makeText(getApplicationContext(), origin_city + "(" + origin_rank + ")" + " : " + destination_city+ "(" + destination_rank + ")", Toast.LENGTH_SHORT).show();
+                Call<UserInput> call = apiInterface.getUserInput(0,origin_city,destination_city,"0",0.0,0.0,0.0,0.0,0.0);
+
+                call.enqueue(new Callback<UserInput>(){
+                    @Override
+                    public void onResponse(Call<UserInput> call, Response<UserInput> response) {
+                        userinput = response.body();
+                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserInput> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
