@@ -37,6 +37,7 @@ public interface ApiInterface {
             @Field("mycity") String mycity,
             @Field("latitude") Double latitude,
             @Field("longitude") Double longitude);
+    @FormUrlEncoded
     @POST("User_Input")
     Call<UserInput> getUserInput(
             @Field("user_input_id") int user_input_id,

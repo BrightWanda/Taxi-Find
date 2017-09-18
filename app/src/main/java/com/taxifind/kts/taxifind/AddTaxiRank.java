@@ -32,7 +32,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.taxifind.kts.POJOs.Distance;
 import com.taxifind.kts.POJOs.UserInput;
 
 import java.io.IOException;
@@ -43,6 +42,8 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * This activity is responsible for allowing the user to input Taxi Rank information
@@ -69,15 +70,16 @@ public class AddTaxiRank extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_taxi_rank);
 
+        Intent intent = getIntent();
+        apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        userinput = (UserInput) intent.getSerializableExtra("com.taxifind.kts.taxifind.MESSAGE");
+
         orgincity = (TextView)findViewById(R.id.addOrigincity); // Origin City
         originrank = (TextView)findViewById(R.id.addOriginrank); // Origin Taxi Rank
         destinationcity = (TextView)findViewById(R.id.addDestinationcity); // Destination City
         destinationrank = (TextView)findViewById(R.id.addDestinationrank); //Destination Taxi Rank
 
         mSubmit = (Button) findViewById(R.id.submit); //Submit button
-
-
-
 
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
@@ -93,14 +95,19 @@ public class AddTaxiRank extends AppCompatActivity{
                 destination_city = destination_city+ "(" + destination_rank + ")";
 
                 //Toast.makeText(getApplicationContext(), origin_city + "(" + origin_rank + ")" + " : " + destination_city+ "(" + destination_rank + ")", Toast.LENGTH_SHORT).show();
-                Call<UserInput> call = apiInterface.getUserInput(0,origin_city,destination_city,"0",0.0,0.0,0.0,0.0,0.0);
+                Call<UserInput> call = apiInterface.getUserInput(0,"origin_city","destination_city","0",0.0,0.0,0.0,0.0,0.0);
 
                 call.enqueue(new Callback<UserInput>(){
                     @Override
                     public void onResponse(Call<UserInput> call, Response<UserInput> response) {
                         userinput = response.body();
-                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
-
+                        if(userinput != null) {
+                            Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), "kunzima", Toast.LENGTH_LONG).show();
+                        }
 
                     }
 
