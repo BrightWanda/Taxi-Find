@@ -81,7 +81,6 @@ public class AddTaxiRank extends AppCompatActivity{
 
         mSubmit = (Button) findViewById(R.id.submit); //Submit button
 
-
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,7 +94,7 @@ public class AddTaxiRank extends AppCompatActivity{
                 destination_city = destination_city+ "(" + destination_rank + ")";
 
                 //Toast.makeText(getApplicationContext(), origin_city + "(" + origin_rank + ")" + " : " + destination_city+ "(" + destination_rank + ")", Toast.LENGTH_SHORT).show();
-                Call<UserInput> call = apiInterface.getUserInput(0,"origin_city","destination_city","0",0.0,0.0,0.0,0.0,0.0);
+                Call<UserInput> call = apiInterface.getUserInput(6,origin_city,destination_city,"0",0.0,0.0,0.0,0.0,null);
 
                 call.enqueue(new Callback<UserInput>(){
                     @Override

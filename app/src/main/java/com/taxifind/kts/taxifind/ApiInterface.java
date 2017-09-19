@@ -48,5 +48,5 @@ public interface ApiInterface {
             @Field("Origin_Loc_Long") Double Origin_Loc_Long,
             @Field("Destination_Loc_Lat") Double Destination_Loc_Lat,
             @Field("Destination_Loc_Long") Double Destination_Loc_Long,
-            @Field("Valid") Double Valid);
+            @Field("Valid") String Valid);
 }
