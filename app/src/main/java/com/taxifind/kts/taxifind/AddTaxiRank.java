@@ -134,6 +134,10 @@ public class AddTaxiRank extends AppCompatActivity{
                         userinput = response.body();
                         if(userinput != null) {
                             Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                            orgincity.setText("");
+                            originrank.setText("");
+                            destinationcity.setText("");
+                            destinationrank.setText("");
                         }
                         else
                         {
