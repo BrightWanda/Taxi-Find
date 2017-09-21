@@ -7,6 +7,7 @@ import com.taxifind.kts.POJOs.Municipalities;
 import com.taxifind.kts.POJOs.Province;
 import com.taxifind.kts.POJOs.Provinces;
 import com.taxifind.kts.POJOs.UserInput;
+import com.taxifind.kts.POJOs.UserInputID;
 
 import java.util.ArrayList;
 
@@ -49,4 +50,6 @@ public interface ApiInterface {
             @Field("Destination_Loc_Lat") Double Destination_Loc_Lat,
             @Field("Destination_Loc_Long") Double Destination_Loc_Long,
             @Field("Valid") String Valid);
+    @GET("User_Input?$inlinecount=allpages")
+    Call<UserInputID> getUserInputID();
 }

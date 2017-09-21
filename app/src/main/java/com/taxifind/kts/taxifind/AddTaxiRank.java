@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.taxifind.kts.POJOs.UserInput;
+import com.taxifind.kts.POJOs.UserInputID;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +63,9 @@ public class AddTaxiRank extends AppCompatActivity{
     Geocoder geocoder;
     private List<Address> addresses;
     private UserInput userinput;
+    private UserInputID userinputID;
     private ApiInterface apiInterface;
+    private int postID = 0;
 //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,35 @@ public class AddTaxiRank extends AppCompatActivity{
 
         mSubmit = (Button) findViewById(R.id.submit); //Submit button
 
+        mSubmit.setEnabled(false);
+
+        Call<UserInputID> call = apiInterface.getUserInputID();
+
+        call.enqueue(new Callback<UserInputID>(){
+            @Override
+            public void onResponse(Call<UserInputID> call, Response<UserInputID> response) {
+                userinputID = response.body();
+                if(userinputID != null) {
+                    Toast.makeText(getApplicationContext(), userinputID.getOdataCount(), Toast.LENGTH_LONG).show();
+                    mSubmit.setEnabled(true);
+                    postID = Integer.parseInt(userinputID.getOdataCount());
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Something went wrong, retrying to connect to server!!!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserInputID> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+
+
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +126,7 @@ public class AddTaxiRank extends AppCompatActivity{
                 destination_city = destination_city+ "(" + destination_rank + ")";
 
                 //Toast.makeText(getApplicationContext(), origin_city + "(" + origin_rank + ")" + " : " + destination_city+ "(" + destination_rank + ")", Toast.LENGTH_SHORT).show();
-                Call<UserInput> call = apiInterface.getUserInput(6,origin_city,destination_city,"0",0.0,0.0,0.0,0.0,null);
+                Call<UserInput> call = apiInterface.getUserInput(postID,origin_city,destination_city,"0",0.0,0.0,0.0,0.0,null);
 
                 call.enqueue(new Callback<UserInput>(){
                     @Override
