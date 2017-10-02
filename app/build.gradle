@@ -1,11 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'Taxi-Find'
+            keyPassword 'Andile#006'
+            storeFile file('C:/Users/wandab/Documents/KTS/KeyStores/Taxi-Find.jks')
+            storePassword 'Andile#006'
+        }
+    }
     compileSdkVersion 26
     buildToolsVersion '26.0.1'
-
     defaultConfig {
-        applicationId "com.taxifind.kts.taxifind"
+        applicationId "com.taxifind.kts.main"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
@@ -23,17 +30,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
-
     dexOptions {
         javaMaxHeapSize "4g"
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':library')
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
@@ -43,7 +49,11 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.github.johnkil.print:print:1.2.2'
     compile 'com.google.android.gms:play-services-maps:11.0.4'
+    compile 'com.google.android.gms:play-services:11.0.4'
     compile 'com.google.android.gms:play-services-ads:11.0.4'
     compile 'com.google.android.gms:play-services-identity:11.0.4'
     compile 'com.google.android.gms:play-services-gcm:11.0.4'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-v4:26.+'
+    testCompile 'junit:junit:4.12'
 }

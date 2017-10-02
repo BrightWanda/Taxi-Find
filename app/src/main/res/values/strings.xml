@@ -10,6 +10,18 @@
     <string name="title_activity_trip_confirm">TaxiFind</string>
     <string name="no_geocoder_available">No geocoder available</string>
 
+    <string-array name="Planets">
+        <item>Sun</item>
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+
     <string name="fetch_address">Fetch address</string>
 
     <string name="address_found">Address found</string>
@@ -476,5 +488,12 @@
     <string name="ic_whatshot">&#xe1ae;</string>
     <string name="ic_wifi_tethering">&#xe1af;</string>
     <string name="ic_work">&#xe1b0;</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -28,12 +28,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <ProgressBar
+            <!--ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true" />-->
 
             <fragment android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:id="@+id/map"

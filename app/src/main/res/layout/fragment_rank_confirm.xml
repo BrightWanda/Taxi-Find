@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.taxifind.kts.fragment.RankConfirmFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="4"
+        android:paddingTop="15dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="50dp"
+            android:paddingRight="30dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_weight="5"
+            android:text="Enjoy your trip" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:paddingTop="20dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical" >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView android:id="@+id/headerOrigin"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="#5BC0DE"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:text=" Origin " />
+
+            <TextView android:id="@+id/textOrigin"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:paddingBottom="2dp"
+                android:text=" Noord Taxi Rank " />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView android:id="@+id/headerDestination"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="#2196F3"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:text=" Destination " />
+
+            <TextView android:id="@+id/textDestination"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:paddingBottom="2dp"
+                android:text=" Midrand Taxi Rank " />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <TextView android:id="@+id/headerPrice"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="#999999"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:text=" Price " />
+
+            <TextView android:id="@+id/textPrice"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_weight="0.50"
+                android:textSize="20dp"
+                android:text=" R18 " />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
