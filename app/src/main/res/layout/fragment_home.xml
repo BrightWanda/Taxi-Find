@@ -82,6 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:background="#04B404"
+            android:enabled="false"
             android:text="@string/find" />
     </LinearLayout>
 </LinearLayout>
