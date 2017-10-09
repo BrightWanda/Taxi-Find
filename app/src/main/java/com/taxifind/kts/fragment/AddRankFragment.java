@@ -41,10 +41,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.taxifind.kts.POJOs.Distance;
 import com.taxifind.kts.POJOs.UserInput;
 import com.taxifind.kts.POJOs.UserInputID;
-import com.taxifind.kts.main.ApiClient;
-import com.taxifind.kts.main.ApiInterface;
-import com.taxifind.kts.main.LazyAdapter;
-import com.taxifind.kts.main.R;
+import com.taxifind.kts.base.ApiClient;
+import com.taxifind.kts.base.ApiInterface;
+import com.taxifind.kts.base.LazyAdapter;
+import com.taxifind.kts.base.R;
 
 import java.io.IOException;
 import java.util.ArrayList;

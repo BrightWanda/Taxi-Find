@@ -4,10 +4,10 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=E4:67:85:0A:58:85:CA:51:78:BD:7F:F1:6F:88:8A:26:28:D7:D5:A5%3Bcom.taxifind.kts.main
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=E4:67:85:0A:58:85:CA:51:78:BD:7F:F1:6F:88:8A:26:28:D7:D5:A5%3Bcom.taxifind.kts.base
 
     You can also add your credentials to an existing key, using this line:
-    E4:67:85:0A:58:85:CA:51:78:BD:7F:F1:6F:88:8A:26:28:D7:D5:A5;com.taxifind.kts.main
+    E4:67:85:0A:58:85:CA:51:78:BD:7F:F1:6F:88:8A:26:28:D7:D5:A5;com.taxifind.kts.base
 
     Alternatively, follow the directions here:
     https://developers.google.com/maps/documentation/android/start#get-key
@@ -16,6 +16,6 @@
     string in this file.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-        AIzaSyDArcZ4kA0dUMQKKANdAGUkF4PKi7eLhNY
+        AIzaSyA6S-eTEfNAP_bF0uuJT-rBsyQEuP0NhFg
     </string>
 </resources>

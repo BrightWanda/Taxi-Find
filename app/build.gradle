@@ -12,7 +12,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.1'
     defaultConfig {
-        applicationId "com.taxifind.kts.main"
+        applicationId "com.taxifind.kts.base"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 2

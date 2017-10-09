@@ -47,9 +47,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.taxifind.kts.POJOs.Distance;
-import com.taxifind.kts.main.ApiClient;
-import com.taxifind.kts.main.ApiInterface;
-import com.taxifind.kts.main.R;
+import com.taxifind.kts.base.ApiClient;
+import com.taxifind.kts.base.ApiInterface;
+import com.taxifind.kts.base.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -156,6 +156,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             checkLocationPermission();
         }
+
+        Toast.makeText(getActivity(), "Hell Yeah!!!!", Toast.LENGTH_LONG).show();
 
         button = rootView.findViewById(R.id.findBtn);
 
@@ -267,8 +269,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                                             .replace(R.id.frame, nextFrag,"findThisFragment")
                                             .addToBackStack(null)
                                             .commit();
-                                    /*Intent intent = new Intent(getActivity(), AddTaxiRank.class);
-                                    startActivity(intent);*/
                                 }
                             });
 
