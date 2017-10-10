@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,7 +65,8 @@ import retrofit2.Response;
  * Use the {@link AddRankFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddRankFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+public class AddRankFragment extends Fragment implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
@@ -83,6 +86,7 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
 
+    private GoogleMap mMap;
     private View rootView;
     private View mProgressView;
     private View mLoginFormView;
@@ -92,6 +96,7 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
     TextView originrank; // Origin Taxi Rank
     TextView destinationcity; // Destination City
     TextView destinationrank; //Destination Taxi Rank
+    TextView priceTrip;
     Button mSubmit;
     Geocoder geocoder;
     private List<Address> addresses;
@@ -99,6 +104,8 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
     private UserInputID userinputID;
     private ApiInterface apiInterface;
     private int postID = 0;
+
+    MapView mMapView;
 
     private CheckBox chkBox;
 
@@ -154,12 +161,12 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
 
         chkBox = rootView.findViewById(R.id.checkbox_send_loc);
         apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        //userinput = (UserInput) intent.getSerializableExtra("com.taxifind.kts.taxifind.MESSAGE");
 
         orgincity = rootView.findViewById(R.id.addOrigincity); // Origin City
         originrank = rootView.findViewById(R.id.addOriginrank); // Origin Taxi Rank
         destinationcity = rootView.findViewById(R.id.addDestinationcity); // Destination City
         destinationrank = rootView.findViewById(R.id.addDestinationrank); //Destination Taxi Rank
+        priceTrip = rootView.findViewById(R.id.addPrice);
 
         mSubmit = rootView.findViewById(R.id.submit); //Submit button
 
@@ -177,7 +184,14 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
                 }
                 else
                 {
-                    Toast.makeText(getActivity(), "Something went wrong, retrying to connect to server!!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Something went wrong, retrying to reconnect to the server!!!", Toast.LENGTH_LONG).show();
+
+                    Fragment frg = null;
+                    frg = getActivity().getSupportFragmentManager().findFragmentByTag("Add A Taxi Rank");
+                    final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.detach(frg);
+                    ft.attach(frg);
+                    ft.commit();
                 }
             }
 
@@ -190,24 +204,23 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Call<UserInput> call;
 
                 String origin_city =  orgincity.getText().toString();
                 String origin_rank = originrank.getText().toString();
                 String destination_city = destinationcity.getText().toString();
                 String destination_rank = destinationrank.getText().toString();
+                String price = priceTrip.getText().toString();
 
                 origin_city = origin_city + "(" + origin_rank + ")";
                 destination_city = destination_city+ "(" + destination_rank + ")";
 
-                //Toast.makeText(getApplicationContext(), origin_city + "(" + origin_rank + ")" + " : " + destination_city+ "(" + destination_rank + ")", Toast.LENGTH_SHORT).show();
                 if(chkBox.isEnabled())
                 {
-                    call = apiInterface.getUserInput(postID,origin_city,destination_city,"0",latitude,longitude,0.0,0.0,null);
+                    call = apiInterface.getUserInput(postID,origin_city,destination_city,price,latitude,longitude,0.0,0.0,null);
                 }
                 else{
-                    call = apiInterface.getUserInput(postID,origin_city,destination_city,"0",0.0,0.0,0.0,0.0,null);
+                    call = apiInterface.getUserInput(postID,origin_city,destination_city,price,0.0,0.0,0.0,0.0,null);
                 }
 
                 call.enqueue(new Callback<UserInput>(){
@@ -215,17 +228,25 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
                     public void onResponse(Call<UserInput> call, Response<UserInput> response) {
                         userinput = response.body();
                         if(userinput != null) {
-                            Toast.makeText(getActivity(), response.body().toString(), Toast.LENGTH_LONG).show();
                             orgincity.setText("");
                             originrank.setText("");
                             destinationcity.setText("");
                             destinationrank.setText("");
+                            priceTrip.setText("");
+
+                            Toast.makeText(getActivity(), "Taxi Rank has been added.", Toast.LENGTH_LONG).show();
                         }
                         else
                         {
-                            Toast.makeText(getActivity(), "kunzima", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "System Error: Please try again later.", Toast.LENGTH_LONG).show();
                         }
 
+                        Fragment frg = null;
+                        frg = getActivity().getSupportFragmentManager().findFragmentByTag("Add A Taxi Rank");
+                        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.detach(frg);
+                        ft.attach(frg);
+                        ft.commit();
                     }
 
                     @Override
@@ -254,8 +275,54 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
             }
         });*/
 
+        mMapView = rootView.findViewById(R.id.mapview);
+
+        if(mMapView != null)
+        {
+            mMapView.onCreate(null);
+            mMapView.onResume();
+            mMapView.getMapAsync(this);
+        }
+
         mLoginFormView = rootView.findViewById(R.id.login_form);
         mProgressView = rootView.findViewById(R.id.login_progress);
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        //MapsInitializer.initialize(getContext());
+        mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        //Initialize Google Play Services
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                buildGoogleApiClient();
+                mMap.animateCamera(CameraUpdateFactory.zoomIn());
+                // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+                mMap.setMyLocationEnabled(true);
+            }
+        }
+        else {
+            buildGoogleApiClient();
+            mMap.animateCamera(CameraUpdateFactory.zoomIn());
+            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+            mMap.setMyLocationEnabled(true);
+        }
     }
 
     @Override
@@ -279,7 +346,6 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
 
     @Override
     public void onLocationChanged(Location location) {
-
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -297,6 +363,22 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
             //Do something with the exception
         }
 
+        LatLng latLng = new LatLng(latitude, longitude);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+        // Zoom in, animating the camera.
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
         //stop location updates
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -306,7 +388,6 @@ public class AddRankFragment extends Fragment implements GoogleApiClient.Connect
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;

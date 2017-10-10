@@ -157,8 +157,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             checkLocationPermission();
         }
 
-        Toast.makeText(getActivity(), "Hell Yeah!!!!", Toast.LENGTH_LONG).show();
-
         button = rootView.findViewById(R.id.findBtn);
 
         txtDest =  rootView.findViewById(R.id.txtDestination);
