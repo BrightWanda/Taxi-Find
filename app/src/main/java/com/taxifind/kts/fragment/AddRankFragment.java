@@ -21,7 +21,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -40,16 +39,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.taxifind.kts.POJOs.Distance;
 import com.taxifind.kts.POJOs.UserInput;
 import com.taxifind.kts.POJOs.UserInputID;
 import com.taxifind.kts.base.ApiClient;
 import com.taxifind.kts.base.ApiInterface;
-import com.taxifind.kts.base.LazyAdapter;
 import com.taxifind.kts.base.R;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -256,24 +252,6 @@ public class AddRankFragment extends Fragment implements OnMapReadyCallback,
                 });
             }
         });
-
-        /*chkBox.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                TextView textView = (TextView) rootView.findViewById(R.id.txtOrigin);
-
-                if(chkBox.isChecked())
-                {
-                    textView.setVisibility(View.GONE);
-                }
-                else
-                {
-                    textView.setVisibility(View.VISIBLE);
-                }
-            }
-        });*/
 
         mMapView = rootView.findViewById(R.id.mapview);
 
