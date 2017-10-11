@@ -22,6 +22,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -174,7 +176,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(count == 0)
+
+                if(s.toString().length() == 0)
                 {
                     button.setEnabled(false);
                 }
@@ -196,10 +199,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                 if(chkBox.isChecked())
                 {
                     textView.setVisibility(View.GONE);
+                    txtDest.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    InputMethodManager input= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    input.restartInput(txtDest);
                 }
                 else
                 {
                     textView.setVisibility(View.VISIBLE);
+                    txtDest.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    InputMethodManager input= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    input.restartInput(txtDest);
                 }
             }
         });
@@ -216,7 +225,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                 //spinner.setVisibility(View.VISIBLE);
                 apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-                CheckBox checkBox = rootView.findViewById(R.id.currentLocationCheckBox);
+                final CheckBox checkBox = rootView.findViewById(R.id.currentLocationCheckBox);
                 txtDest =  rootView.findViewById(R.id.txtDestination);
 
                 if(!checkBox.isChecked())
@@ -245,6 +254,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                             {
                                 txtOrigin.getText().clear();
                             }
+
+                            if(!checkBox.isChecked())
+                            {
+                                checkBox.toggle();
+                            }
+
                             RankListFragment nextFrag= new RankListFragment();
                             nextFrag.setArguments(args);
                             getActivity().getSupportFragmentManager().beginTransaction()

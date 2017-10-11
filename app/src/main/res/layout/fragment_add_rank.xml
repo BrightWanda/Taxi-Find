@@ -49,8 +49,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_origin_city"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -63,8 +64,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_origin_rank"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -77,8 +79,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_destination_city"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -91,8 +94,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_destination_rank"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -105,8 +109,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_price"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
 
         </android.support.design.widget.TextInputLayout>
 

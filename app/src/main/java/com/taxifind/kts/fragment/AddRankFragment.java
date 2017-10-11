@@ -166,6 +166,25 @@ public class AddRankFragment extends Fragment implements OnMapReadyCallback,
 
         mSubmit = rootView.findViewById(R.id.submit); //Submit button
 
+        chkBox.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                TextView textView = rootView.findViewById(R.id.addOrigincity);
+
+                if(chkBox.isChecked())
+                {
+                    textView.setVisibility(View.GONE);
+                }
+                else
+                {
+                    textView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
         mSubmit.setEnabled(false);
 
         Call<UserInputID> call = apiInterface.getUserInputID();
@@ -208,14 +227,17 @@ public class AddRankFragment extends Fragment implements OnMapReadyCallback,
                 String destination_rank = destinationrank.getText().toString();
                 String price = priceTrip.getText().toString();
 
-                origin_city = origin_city + "(" + origin_rank + ")";
                 destination_city = destination_city+ "(" + destination_rank + ")";
 
                 if(chkBox.isEnabled())
                 {
+                    origin_city = myCity;
+                    origin_city = origin_city + "(" + origin_rank + ")";
                     call = apiInterface.getUserInput(postID,origin_city,destination_city,price,latitude,longitude,0.0,0.0,null);
+                    chkBox.toggle();
                 }
                 else{
+                    origin_city = origin_city + "(" + origin_rank + ")";
                     call = apiInterface.getUserInput(postID,origin_city,destination_city,price,0.0,0.0,0.0,0.0,null);
                 }
 
