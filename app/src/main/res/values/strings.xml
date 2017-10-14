@@ -3,7 +3,7 @@
     <string name="title_activity_maps">TaxiFind</string>
     <string name="find">Find</string>
     <string name="action_close">Close App</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_exit">Exit</string>
     <string name="rank_to_find">Enter destination</string>
     <string name="toolbarTitle">TaxiFind</string>
     <string name="title_activity_choose_rank">TaxiFind</string>

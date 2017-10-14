@@ -19,12 +19,14 @@ public class LazyAdapter extends BaseAdapter {
     private Activity activity;
     private String[] items;
     private List<Distance> distances;
+    private int queryInd;
     private static LayoutInflater inflater=null;
     public ImageLoader imageLoader; 
     
-    public LazyAdapter(Activity a, List<Distance> d) {
+    public LazyAdapter(Activity a, List<Distance> d, int queryInd) {
         this.distances = d;
         this.activity = a;
+        this.queryInd = queryInd;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         imageLoader=new ImageLoader();
     }
@@ -52,8 +54,14 @@ public class LazyAdapter extends BaseAdapter {
         ImageView thumb_image= (ImageView)vi.findViewById(R.id.list_image); // thumb image
 
         title.setText(distances.get(position).getRankname() );
-        DecimalFormat f = new DecimalFormat("##.00");
-        artist.setText(f.format(distances.get(position).getDistance()) + " km");
+        if(queryInd == 1){
+            DecimalFormat f = new DecimalFormat("##.00");
+            artist.setText(f.format(distances.get(position).getDistance()) + " km");
+        }
+        else{
+            artist.setText("");
+        }
+
         duration.setText("");
         imageLoader.DisplayImage(thumb_image);
         return vi;

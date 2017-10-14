@@ -57,7 +57,7 @@ import java.util.Locale;
  * create an instance of this fragment.
  */
 public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMyLocationButtonClickListener,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
@@ -89,6 +89,8 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
     Geocoder geocoder;
     private ProgressBar spinner;
     private View rootView;
+
+    private int queryInd = 1;
 
     MapView mMapView;
 
@@ -153,6 +155,7 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
         Bundle b = getArguments();
         distance = (Distance) b.getSerializable("distance_item");
         String tripDestination = b.getString("destination");
+        queryInd = b.getInt("queryInd");
 
         TextView textOrigin = rootView.findViewById(R.id.textOrigin);
         TextView textDestination = rootView.findViewById(R.id.textDestination);
@@ -162,7 +165,7 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
 
         textOrigin.setText(" "+ distance.getRankname());
         textDestination.setText(" "+ tripDestination);
-        textPrice.setText(" "+ distance.getPrice());
+        textPrice.setText("R "+ distance.getPrice());
     }
 
     /**
@@ -179,6 +182,7 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
 //        MapsInitializer.initialize(getContext());
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
 
         //Initialize Google Play Services
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -189,7 +193,13 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
                 mMap.animateCamera(CameraUpdateFactory.zoomIn());
                 // Zoom out to zoom level 10, animating with a duration of 2 seconds.
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+                mMap.setOnMyLocationButtonClickListener(this);
                 mMap.setMyLocationEnabled(true);
+
+                if(queryInd == 2)
+                {
+                    mMap.setMyLocationEnabled(false);
+                }
             }
         }
         else {
@@ -197,8 +207,23 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
             mMap.animateCamera(CameraUpdateFactory.zoomIn());
             // Zoom out to zoom level 10, animating with a duration of 2 seconds.
             mMap.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+            mMap.setOnMyLocationButtonClickListener(this);
             mMap.setMyLocationEnabled(true);
+
+            if(queryInd == 2)
+            {
+                mMap.setMyLocationEnabled(false);
+            }
         }
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr="+ latitude+","+longitude+"&daddr="+distance.getLatitude()+","+distance.getLongitude()));
+            startActivity(intent);
+
+        return false;
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -249,15 +274,27 @@ public class RankConfirmFragment extends Fragment implements OnMapReadyCallback,
             //Do something with the exception
         }
 
-        LatLng latLng = new LatLng(latitude, longitude);
+        LatLng latLng = new LatLng(distance.getLatitude(), distance.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        markerOptions.title(distance.getRankname());
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
+        mCurrLocationMarker.showInfoWindow();
+
+        //mMap.getUiSettings().setMapToolbarEnabled(true);
+
+        if(queryInd == 1){
+            latLng = new LatLng(latitude, longitude);
+            markerOptions.position(latLng);
+            markerOptions.title("Your Location");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            mCurrLocationMarker = mMap.addMarker(markerOptions);
+            //mCurrLocationMarker.showInfoWindow();
+        }
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,13));
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.

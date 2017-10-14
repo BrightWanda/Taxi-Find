@@ -105,6 +105,7 @@ public class RankListFragment extends Fragment implements OnMapReadyCallback,
     public static final String DESTINATION = "com.taxifind.kts.taxifind.DEST";
     private ProgressBar spinner;
     private View rootView;
+    private int queryInd = 1;
 
     MapView mMapView;
 
@@ -170,9 +171,11 @@ public class RankListFragment extends Fragment implements OnMapReadyCallback,
         Bundle b = getArguments();
         distance = (ArrayList<Distance>) b.getSerializable("distance_data");
         dest = b.getString("destination");
+        queryInd = b.getInt("queryInd");
+
         list= rootView.findViewById(R.id.list);
 
-        adapter=new LazyAdapter(getActivity(), distance);
+        adapter=new LazyAdapter(getActivity(), distance, queryInd);
         list.setAdapter(adapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,6 +185,7 @@ public class RankListFragment extends Fragment implements OnMapReadyCallback,
                 Bundle args = new Bundle();
                 args.putSerializable("distance_item",distance.get(position));
                 args.putString("destination", dest);
+                args.putInt("queryInd", queryInd);
                 RankConfirmFragment nextFrag= new RankConfirmFragment();
                 nextFrag.setArguments(args);
                 getActivity().getSupportFragmentManager().beginTransaction()
@@ -278,13 +282,25 @@ public class RankListFragment extends Fragment implements OnMapReadyCallback,
 
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        if(queryInd == 1) {
+            markerOptions.position(latLng);
+            markerOptions.title("Your Location");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            mCurrLocationMarker = mMap.addMarker(markerOptions);
+            mCurrLocationMarker.showInfoWindow();
+        }
+
+        for(Distance dist : distance){
+            latLng = new LatLng(dist.getLatitude(), dist.getLongitude());
+            markerOptions.position(latLng);
+            markerOptions.title(dist.getRankname());
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mCurrLocationMarker = mMap.addMarker(markerOptions);
+        }
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,13));
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.

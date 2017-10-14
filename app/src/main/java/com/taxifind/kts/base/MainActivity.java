@@ -180,6 +180,9 @@ public class MainActivity extends AppCompatActivity
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_OVERVIEW;
                         break;
+                    case R.id.nav_exit:
+                        System.exit(0);
+                        break;
                     default:
                         navItemIndex = 0;
                 }
@@ -253,7 +256,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_exit) {
+            System.exit(0);
             return true;
         }
 
@@ -274,6 +278,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
+        }else if (id == R.id.nav_exit) {
+            Toast.makeText(this, "Exit Pressed", Toast.LENGTH_LONG).show();
+            System.exit(0);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

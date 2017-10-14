@@ -44,7 +44,7 @@ public class ChooseRank extends AppCompatActivity implements OnMapReadyCallback 
         distance = (ArrayList<Distance>) intent.getSerializableExtra(EXTRA_MESSAGE);
         list= (ListView)findViewById(R.id.list);
 
-        adapter=new LazyAdapter(this, distance);
+        adapter=new LazyAdapter(this, distance, 1);
         list.setAdapter(adapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

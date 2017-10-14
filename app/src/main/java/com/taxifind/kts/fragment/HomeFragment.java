@@ -100,12 +100,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     private EditText txtDest;
     private EditText txtOrigin;
     Geocoder geocoder;
-    public static final String EXTRA_MESSAGE = "com.taxifind.kts.taxifind.MESSAGE";
-    public static final String LONG = "com.taxifind.kts.taxifind.LONG";
-    public static final String LAT = "com.taxifind.kts.taxifind.LAT";
-    public static final String DESTINATION = "com.taxifind.kts.taxifind.DEST";
     private ProgressBar spinner;
     private Button button;
+    private int queryInd = 1;
 
     private CheckBox chkBox;
 
@@ -142,11 +139,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        /*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            checkLocationPermission();
-        }*/
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
     }
 
     @Override
@@ -194,10 +186,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v)
             {
-                TextView textView = (TextView) rootView.findViewById(R.id.txtOrigin);
+                TextView textView = rootView.findViewById(R.id.txtOrigin);
 
                 if(chkBox.isChecked())
                 {
+                    queryInd = 1;
                     textView.setVisibility(View.GONE);
                     txtDest.setImeOptions(EditorInfo.IME_ACTION_DONE);
                     InputMethodManager input= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -205,6 +198,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                 }
                 else
                 {
+                    queryInd = 2;
                     textView.setVisibility(View.VISIBLE);
                     txtDest.setImeOptions(EditorInfo.IME_ACTION_NEXT);
                     InputMethodManager input= (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -249,6 +243,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                             Bundle args = new Bundle();
                             args.putSerializable("distance_data",distance);
                             args.putString("destination", txtDest.getText().toString());
+                            args.putInt("queryInd", queryInd);
                             txtDest.getText().clear();
                             if(txtOrigin != null)
                             {
@@ -266,6 +261,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                                     .replace(R.id.frame, nextFrag,"findThisFragment")
                                     .addToBackStack(null)
                                     .commit();
+
+                            queryInd = 1;
                         }
                         else
                         {
@@ -337,7 +334,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         //MapsInitializer.initialize(getContext());
         mMap = googleMap;
-        mMap.getUiSettings().setMapToolbarEnabled(false);
+        //mMap.getUiSettings().setMapToolbarEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         //Initialize Google Play Services
@@ -413,9 +410,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         LatLng latLng = new LatLng(latitude, longitude);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        markerOptions.title("Your Location");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
+        mCurrLocationMarker.showInfoWindow();
+
+        mMap.getUiSettings().setMapToolbarEnabled(true);
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
