@@ -2,6 +2,7 @@ package com.taxifind.kts.fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -107,6 +108,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     private CheckBox chkBox;
 
     private View rootView;
+    private View mProgressView;
+
+    private ProgressDialog pd;
 
     MapView mMapView;
 
@@ -151,6 +155,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             checkLocationPermission();
         }
 
+        pd = new ProgressDialog(getContext());
+
+        mProgressView = rootView.findViewById(R.id.login_progress);
         button = rootView.findViewById(R.id.findBtn);
 
         txtDest =  rootView.findViewById(R.id.txtDestination);
@@ -209,15 +216,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                /*RankListFragment nextFrag= new RankListFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frame, nextFrag,"findThisFragment")
-                        .addToBackStack(null)
-                        .commit();*/
-
-                //spinner.setVisibility(View.VISIBLE);
                 apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+
+                pd.setMessage("loading");
+                pd.show();
+                //mProgressView.setVisibility(View.VISIBLE);
 
                 final CheckBox checkBox = rootView.findViewById(R.id.currentLocationCheckBox);
                 txtDest =  rootView.findViewById(R.id.txtDestination);
@@ -232,6 +235,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
                 //Call<ArrayList<Distance>> call = apiInterface.getDistances(0, "Johannesburg", "Vosloorus", "Johannesburg", -26.209340, 28.039378);
 
+                //spinner.setVisibility(rootView.VISIBLE);
                 Call<ArrayList<Distance>> call = apiInterface.getDistances(0,myCity,txtDest.getText().toString(),myCity,latitude,longitude);
 
                 call.enqueue(new Callback<ArrayList<Distance>>(){
@@ -239,6 +243,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                     public void onResponse(Call<ArrayList<Distance>> call, Response<ArrayList<Distance>> response) {
                         distance = response.body();
                         //spinner.setVisibility(View.GONE);
+                        pd.dismiss();
                         if(distance != null && distance.size() != 0) {
                             Bundle args = new Bundle();
                             args.putSerializable("distance_data",distance);
@@ -255,6 +260,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                                 checkBox.toggle();
                             }
 
+                            //spinner.setVisibility(rootView.GONE);
                             RankListFragment nextFrag= new RankListFragment();
                             nextFrag.setArguments(args);
                             getActivity().getSupportFragmentManager().beginTransaction()
@@ -266,6 +272,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                         }
                         else
                         {
+                            //spinner.setVisibility(rootView.GONE);
                             Toast.makeText(getActivity(), "Taxi Rank could not be found.", Toast.LENGTH_LONG).show();
 
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -296,6 +303,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
                     @Override
                     public void onFailure(Call<ArrayList<Distance>> call, Throwable t) {
+                        pd.dismiss();
                         Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -310,6 +318,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        /*spinner = rootView.findViewById(R.id.progressBar);
+
+        spinner.setVisibility(rootView.GONE);*/
 
         mMapView = rootView.findViewById(R.id.mapview);
 

@@ -74,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String LAT = "com.taxifind.kts.taxifind.LAT";
     public static final String DESTINATION = "com.taxifind.kts.taxifind.DEST";
     private ProgressBar spinner;
+    private View mProgressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -90,11 +91,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mProgressView = findViewById(R.id.login_progress);
+
         final Button button = (Button) findViewById(R.id.findBtn);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 //spinner.setVisibility(View.VISIBLE);
+                mProgressView.setVisibility(View.VISIBLE);
                 apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
                 CheckBox checkBox = (CheckBox)findViewById(R.id.currentLocationCheckBox);

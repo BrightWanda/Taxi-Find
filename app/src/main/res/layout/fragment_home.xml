@@ -5,11 +5,19 @@
     android:orientation="vertical"
     tools:context="com.taxifind.kts.fragment.HomeFragment">
 
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/top_half"
         android:layout_weight="1"
-        android:paddingTop="30dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
@@ -19,12 +27,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <!--ProgressBar
+            ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true" />-->
+                android:layout_centerHorizontal="true" />
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapview"

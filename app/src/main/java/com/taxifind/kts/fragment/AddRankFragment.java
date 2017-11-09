@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,11 +89,11 @@ public class AddRankFragment extends Fragment implements OnMapReadyCallback,
     private View mLoginFormView;
     private String myCity = "";
     private double longitude, latitude;
-    TextView orgincity; // Origin City
-    TextView originrank; // Origin Taxi Rank
-    TextView destinationcity; // Destination City
-    TextView destinationrank; //Destination Taxi Rank
-    TextView priceTrip;
+    EditText orgincity; // Origin City
+    EditText originrank; // Origin Taxi Rank
+    EditText destinationcity; // Destination City
+    EditText destinationrank; //Destination Taxi Rank
+    EditText priceTrip;
     Button mSubmit;
     Geocoder geocoder;
     private List<Address> addresses;
@@ -221,57 +222,84 @@ public class AddRankFragment extends Fragment implements OnMapReadyCallback,
             public void onClick(View view) {
                 Call<UserInput> call;
 
-                String origin_city =  orgincity.getText().toString();
-                String origin_rank = originrank.getText().toString();
-                String destination_city = destinationcity.getText().toString();
-                String destination_rank = destinationrank.getText().toString();
-                String price = priceTrip.getText().toString();
-
-                destination_city = destination_city+ "(" + destination_rank + ")";
-
-                if(chkBox.isEnabled())
+                if(!hasText(orgincity))
                 {
-                    origin_city = myCity;
-                    origin_city = origin_city + "(" + origin_rank + ")";
-                    call = apiInterface.getUserInput(postID,origin_city,destination_city,price,latitude,longitude,0.0,0.0,null);
-                    chkBox.toggle();
-                }
-                else{
-                    origin_city = origin_city + "(" + origin_rank + ")";
-                    call = apiInterface.getUserInput(postID,origin_city,destination_city,price,0.0,0.0,0.0,0.0,null);
+                    Toast.makeText(getActivity(), "Some field(s) are missing!", Toast.LENGTH_LONG).show();
                 }
 
-                call.enqueue(new Callback<UserInput>(){
-                    @Override
-                    public void onResponse(Call<UserInput> call, Response<UserInput> response) {
-                        userinput = response.body();
-                        if(userinput != null) {
-                            orgincity.setText("");
-                            originrank.setText("");
-                            destinationcity.setText("");
-                            destinationrank.setText("");
-                            priceTrip.setText("");
+                if(!hasText(originrank))
+                {
+                    Toast.makeText(getActivity(), "Some field(s) are missing!", Toast.LENGTH_LONG).show();
+                }
 
-                            Toast.makeText(getActivity(), "Taxi Rank has been added.", Toast.LENGTH_LONG).show();
-                        }
-                        else
-                        {
-                            Toast.makeText(getActivity(), "System Error: Please try again later.", Toast.LENGTH_LONG).show();
-                        }
+                if(!hasText(destinationcity))
+                {
+                    Toast.makeText(getActivity(), "Some field(s) are missing!", Toast.LENGTH_LONG).show();
+                }
 
-                        Fragment frg = null;
-                        frg = getActivity().getSupportFragmentManager().findFragmentByTag("Add A Taxi Rank");
-                        final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.detach(frg);
-                        ft.attach(frg);
-                        ft.commit();
+                if(!hasText(destinationrank))
+                {
+                    Toast.makeText(getActivity(), "Some field(s) are missing!", Toast.LENGTH_LONG).show();
+                }
+
+                if(!hasText(priceTrip))
+                {
+                    Toast.makeText(getActivity(), "Some field(s) are missing!", Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    String origin_city =  orgincity.getText().toString();
+                    String origin_rank = originrank.getText().toString();
+                    String destination_city = destinationcity.getText().toString();
+                    String destination_rank = destinationrank.getText().toString();
+                    String price = priceTrip.getText().toString();
+
+                    destination_city = destination_city+ "(" + destination_rank + ")";
+
+                    if(chkBox.isEnabled())
+                    {
+                        origin_city = myCity;
+                        origin_city = origin_city + "(" + origin_rank + ")";
+                        call = apiInterface.getUserInput(postID,origin_city,destination_city,price,latitude,longitude,0.0,0.0,null);
+                        chkBox.toggle();
+                    }
+                    else{
+                        origin_city = origin_city + "(" + origin_rank + ")";
+                        call = apiInterface.getUserInput(postID,origin_city,destination_city,price,0.0,0.0,0.0,0.0,null);
                     }
 
-                    @Override
-                    public void onFailure(Call<UserInput> call, Throwable t) {
-                        Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                    call.enqueue(new Callback<UserInput>(){
+                        @Override
+                        public void onResponse(Call<UserInput> call, Response<UserInput> response) {
+                            userinput = response.body();
+                            if(userinput != null) {
+                                orgincity.setText("");
+                                originrank.setText("");
+                                destinationcity.setText("");
+                                destinationrank.setText("");
+                                priceTrip.setText("");
+
+                                Toast.makeText(getActivity(), "Taxi Rank has been added.", Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(), "System Error: Please try again later.", Toast.LENGTH_LONG).show();
+                            }
+
+                            Fragment frg = null;
+                            frg = getActivity().getSupportFragmentManager().findFragmentByTag("Add A Taxi Rank");
+                            final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.detach(frg);
+                            ft.attach(frg);
+                            ft.commit();
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserInput> call, Throwable t) {
+                            Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
 
@@ -286,6 +314,20 @@ public class AddRankFragment extends Fragment implements OnMapReadyCallback,
 
         mLoginFormView = rootView.findViewById(R.id.login_form);
         mProgressView = rootView.findViewById(R.id.login_progress);
+    }
+
+    public static boolean hasText(EditText editText) {
+
+        String text = editText.getText().toString().trim();
+        editText.setError(null);
+
+        // length 0 means there is no text
+        if (text.length() == 0) {
+            //Toast.makeText(getActivity(), "Some field(s) are missing!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
 
     /**
